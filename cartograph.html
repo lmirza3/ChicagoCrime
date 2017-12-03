@@ -2,23 +2,44 @@
 <head>
   <title>A D3 map</title>
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="neighborhoods.js"></script>
-  <script src="crimes.js"></script>
+  <script src="neighborhoods.json"></script>
+  <script src="crimes.json"></script>
   <style>
     #neighborhoods path{
       fill: #ccc;
     }
-    #crimes path{
-      fill: #900;
-      stroke: #999;
-    }
-    #crimes path:hover{
-      fill: black;
-    }
+      
+      body {
+          position: absolute;
+          font-family: "Proxima Nova","Montserrat", sans-serif;
+      }
+      
+      h1,h2 {
+          position: absolute;
+          left: 10px;
+          font-size: 1.3em;
+          font-weight: 100;
+      }
+      
+      h2 {
+          top: 30px;
+          font-size: 1em;
+      }
+      
+      .crime {
+          fill: steelblue;
+      }
+      
+      .hover {
+          fill: yellow;
+      }
   </style>
 </head>
 <body>
+    <h1>Crime Incidents in Chicago</h1>
+    <h2></h2>
   <script>
+      
     var width = 700,
         height = 580;
 
@@ -44,15 +65,20 @@
       .append( "path" )
       .attr( "d", geoPath );
 
-    var crimes = svg.append("g").attr("id","crimes");
+    var crimes = svg.append("g").attr("class","crime");
 
     crimes.selectAll("path")
       .data(crime_json.features)
       .enter()
       .append("path")
       .attr("d", geoPath)
-      .on("click", function(){
-        d3.select(this).remove();
+      .on("mouseover", function(d){
+        d3.select("h2").text(d.properties.Block);
+        d3.select(this).attr("class","crime hover");
+      })
+      .on("mouseout",function(d) {
+        d3.select("h2").text("");
+        d3.select(this).attr("class","crime");
       });
   </script>
 </body>
